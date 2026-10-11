@@ -1,0 +1,91 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-create-app-users
+  namespace: postgres
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: postgres-init
+          image: postgres:17-alpine
+          env:
+            - name: PGHOST
+              value: "postgres-postgresql.postgres.svc.cluster.local"
+            - name: PGPORT
+              value: "5432"
+            - name: PGUSER
+              value: "postgres"
+
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-auth
+                  key: postgres-password
+
+            - name: APP_BACK_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-demo-back
+                  key: postgres-password
+
+            - name: APP_READER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-demo-reader
+                  key: postgres-password
+
+          command:
+            - /bin/bash
+            - -c
+            - |
+              until pg_isready; do
+                echo "Waiting for PostgreSQL..."
+                sleep 2
+              done
+
+              psql -v ON_ERROR_STOP=1 \
+                --set=app_back_password="$APP_BACK_PASSWORD" \
+                --set=app_reader_password="$APP_READER_PASSWORD" \
+                <<'SQL'
+
+              SELECT 'CREATE DATABASE demo'
+              WHERE NOT EXISTS (
+                  SELECT FROM pg_database WHERE datname = 'demo'
+              )\gexec
+
+              SELECT format(
+                'CREATE USER demo_back PASSWORD %L',
+                :'app_back_password'
+              )
+              WHERE NOT EXISTS (
+                SELECT FROM pg_roles WHERE rolname = 'demo_back'
+              )\gexec
+
+              SELECT format(
+                'CREATE USER demo_reader PASSWORD %L',
+                :'app_reader_password'
+              )
+              WHERE NOT EXISTS (
+                SELECT FROM pg_roles WHERE rolname = 'demo_reader'
+              )\gexec
+
+              GRANT CONNECT ON DATABASE demo TO demo_back, demo_reader;
+
+              \c demo
+
+              GRANT USAGE ON SCHEMA public TO demo_back, demo_reader;
+              GRANT USAGE, CREATE ON SCHEMA public TO demo_back;
+
+              GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO demo_back;
+              GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public TO demo_back;
+              GRANT SELECT ON ALL TABLES IN SCHEMA public TO demo_reader;
+              GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO demo_reader;
+
+              ALTER DEFAULT PRIVILEGES FOR USER demo_back IN SCHEMA public 
+              GRANT SELECT ON TABLES TO demo_reader;
+              ALTER DEFAULT PRIVILEGES FOR USER demo_back IN SCHEMA public 
+              GRANT SELECT, USAGE ON SEQUENCES TO demo_reader;
+              
+              SQL

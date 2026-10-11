@@ -1,0 +1,32 @@
+image:
+  repository: demo-reader
+
+ports:
+  serverPort: 8084
+  managementPort: 8081
+
+env:
+  - name: SPRING_DATASOURCE_URL
+    value: "jdbc:postgresql://postgres-postgresql.postgres.svc.cluster.local:5432/demo"
+  - name: SPRING_DATASOURCE_USERNAME
+    value: "demo_reader"
+  - name: SPRING_DATASOURCE_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: postgres-secret
+        key: postgres-password
+
+ingress:
+  enabled: true
+  ingressClassName: traefik
+
+  hosts:
+    - host: demo-reader.local
+      paths:
+        - path: /
+          pathType: Prefix
+
+  tls:
+    - secretName: demo-reader-tls
+      hosts:
+        - demo-reader.local

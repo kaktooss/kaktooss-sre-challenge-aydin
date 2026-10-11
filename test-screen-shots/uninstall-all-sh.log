@@ -1,0 +1,9 @@
+./uninstall-all.sh 
+release "back-app" uninstalled
+release "front-app" uninstalled
+release "reader-app" uninstalled
+release "kafka" uninstalled
+persistentvolumeclaim "data-kafka-broker-0" deleted
+persistentvolumeclaim "data-kafka-controller-0" deleted
+release "postgres" uninstalled
+persistentvolumeclaim "data-postgres-postgresql-0" deleted

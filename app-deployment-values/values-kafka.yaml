@@ -1,0 +1,48 @@
+# Use specific bitnami-legacy image to match existing cluster deployment
+image:
+  registry: docker.io
+  repository: bitnamilegacy/kafka
+  tag: "4.0.0"
+
+# Allow insecure images to avoid potential pulls/verification issues in local environments
+global:
+  security:
+    allowInsecureImages: true
+
+# Configure controller for KRaft mode to manage cluster metadata
+controller:
+  replicaCount: 1
+
+broker:
+  replicaCount: 1
+  # Override hardcoded defaults to allow topic creation with a single broker
+  extraConfig: |-
+    offsets.topic.replication.factor=1
+    transaction.state.log.replication.factor=1
+    transaction.state.log.min.isr=1
+    log.retention.ms=60000
+  # Define listeners for external and internal traffic routing
+  extraEnvVars:
+    - name: KAFKA_CFG_ADVERTISED_LISTENERS
+      value: "CLIENT://kafka.kafka.svc.cluster.local:9092,INTERNAL://kafka-broker-0.kafka-broker-headless.kafka.svc.cluster.local:9094"
+
+# Use internal tool to force topic creation during startup, bypassing auto-creation failures
+provisioning:
+  enabled: true
+  topics:
+    - name: testCommand
+      partitions: 32
+      replicationFactor: 1
+    # Create system offsets topic explicitly to prevent GroupCoordinator timeout
+    - name: __consumer_offsets
+      partitions: 50
+      replicationFactor: 1
+
+# Force plain text communication to avoid complex security setup for development/testing
+listeners:
+  client:
+    protocol: PLAINTEXT
+  controller:
+    protocol: PLAINTEXT
+  interbroker:
+    protocol: PLAINTEXT

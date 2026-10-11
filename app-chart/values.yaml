@@ -1,0 +1,33 @@
+# app-chart/values.yaml
+replicaCount: 1
+
+image:
+  repository: ""
+  tag: "0.1.0"
+  pullPolicy: Never
+
+ports:
+  serverPort: 8080
+  managementPort: 8081
+
+probes:
+  initialDelaySeconds: 20
+  periodSeconds: 10
+
+# Default empty environment variables list
+env: []
+
+ingress:
+  enabled: false
+  ingressClassName: traefik
+
+  hosts:
+    - host: myapp.local
+      paths:
+        - path: /
+          pathType: Prefix
+
+  tls:
+    - secretName: myapp-tls
+      hosts:
+        - myapp.local

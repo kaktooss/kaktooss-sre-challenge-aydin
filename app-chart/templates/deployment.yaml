@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "Never" }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.ports.serverPort }}
+            - name: management
+              containerPort: {{ .Values.ports.managementPort }}
+          
+          # Health Probes on the management port (8081)
+          livenessProbe:
+            httpGet:
+              path: /health/liveness
+              port: management
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health/readiness
+              port: management
+            initialDelaySeconds: 20
+            periodSeconds: 10
+
+          # Inject Spring Boot environment variables (Relaxed Binding)
+          env:
+            - name: SERVER_PORT
+              value: "{{ .Values.ports.serverPort }}"
+            - name: MANAGEMENT_SERVER_PORT
+              value: "{{ .Values.ports.managementPort }}"
+            {{- with .Values.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}

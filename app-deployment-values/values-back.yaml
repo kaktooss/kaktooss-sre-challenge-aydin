@@ -1,0 +1,20 @@
+image:
+  repository: demo-back
+
+ports:
+  serverPort: 8082
+  managementPort: 8081
+
+env:
+  - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+    value: "kafka.kafka.svc.cluster.local:9092"
+  - name: SPRING_DATASOURCE_URL
+    value: "jdbc:postgresql://postgres-postgresql.postgres.svc.cluster.local:5432/demo"
+  - name: SPRING_DATASOURCE_USERNAME
+    value: "demo_back"
+  - name: SPRING_DATASOURCE_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: postgres-secret
+        key: postgres-password
+

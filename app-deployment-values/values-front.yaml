@@ -1,0 +1,29 @@
+image:
+  repository: demo-front
+
+ports:
+  serverPort: 8080
+  managementPort: 8081
+
+env:
+  - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+    value: "kafka.kafka.svc.cluster.local:9092"
+  - name: LOGGING_LEVEL_ROOT
+    value: "WARN"
+  - name: LOGGING_LEVEL_DB_DEMO
+    value: "INFO"
+
+ingress:
+  enabled: true
+  ingressClassName: traefik
+
+  hosts:
+    - host: demo-front.local
+      paths:
+        - path: /
+          pathType: Prefix
+
+  tls:
+    - secretName: demo-front-tls
+      hosts:
+        - demo-front.local

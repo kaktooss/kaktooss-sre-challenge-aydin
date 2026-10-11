@@ -1,0 +1,254 @@
+$ ./install-all.sh 
+Build Java and Docker Images:
+Using version: 0.1.0
+==========================================
+ 1. Navigating to project directory
+==========================================
+==========================================
+ 2. Compiling Java Applications
+==========================================
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.14.5/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+[Incubating] Problems report is available at: sre-challenge/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.14.5/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 31s
+30 actionable tasks: 29 executed, 1 up-to-date
+==========================================
+ 3. Building Docker Images
+==========================================
+Building demo-back:0.1.0...
+[+] Building 1.8s (7/7) FINISHED                                                                                                                                                                                   docker:default
+ => [internal] load build definition from Dockerfile                                                                                                                                                                         0.0s
+ => => transferring dockerfile: 249B                                                                                                                                                                                         0.0s
+ => [internal] load metadata for docker.io/library/ibm-semeru-runtimes:open-21-jre                                                                                                                                           0.7s
+ => [internal] load .dockerignore                                                                                                                                                                                            0.0s
+ => => transferring context: 2B                                                                                                                                                                                              0.0s
+ => [internal] load build context                                                                                                                                                                                            0.5s
+ => => transferring context: 83.45MB                                                                                                                                                                                         0.5s
+ => CACHED [1/2] FROM docker.io/library/ibm-semeru-runtimes:open-21-jre@sha256:60a5e3608488376679e9e8b936eb5d8ee19fb567e5def1ea1b55d1058864aa3f                                                                              0.0s
+ => [2/2] COPY build/libs/back-0.1.0.jar /app.jar                                                                                                                                                                            0.2s
+ => exporting to image                                                                                                                                                                                                       0.3s
+ => => exporting layers                                                                                                                                                                                                      0.2s
+ => => writing image sha256:7488c698b2f817c6701a0d0fffa0bb8c354565b9d78f644365cbf34c7212831d                                                                                                                                 0.0s
+ => => naming to docker.io/library/demo-back:0.1.0                                                                                                                                                                           0.0s
+Building demo-front:0.1.0...
+[+] Building 1.0s (7/7) FINISHED                                                                                                                                                                                   docker:default
+ => [internal] load build definition from Dockerfile                                                                                                                                                                         0.0s
+ => => transferring dockerfile: 250B                                                                                                                                                                                         0.0s
+ => [internal] load metadata for docker.io/library/ibm-semeru-runtimes:open-21-jre                                                                                                                                           0.2s
+ => [internal] load .dockerignore                                                                                                                                                                                            0.0s
+ => => transferring context: 2B                                                                                                                                                                                              0.0s
+ => [internal] load build context                                                                                                                                                                                            0.4s
+ => => transferring context: 58.66MB                                                                                                                                                                                         0.3s
+ => CACHED [1/2] FROM docker.io/library/ibm-semeru-runtimes:open-21-jre@sha256:60a5e3608488376679e9e8b936eb5d8ee19fb567e5def1ea1b55d1058864aa3f                                                                              0.0s
+ => [2/2] COPY build/libs/front-0.1.0.jar /app.jar                                                                                                                                                                           0.1s
+ => exporting to image                                                                                                                                                                                                       0.2s
+ => => exporting layers                                                                                                                                                                                                      0.2s
+ => => writing image sha256:85180462ff711554962c874d0896cecf31aef98077bb43ff3fabd9565943a98e                                                                                                                                 0.0s
+ => => naming to docker.io/library/demo-front:0.1.0                                                                                                                                                                          0.0s
+Building demo-reader:0.1.0...
+[+] Building 1.1s (7/7) FINISHED                                                                                                                                                                                   docker:default
+ => [internal] load build definition from Dockerfile                                                                                                                                                                         0.0s
+ => => transferring dockerfile: 251B                                                                                                                                                                                         0.0s
+ => [internal] load metadata for docker.io/library/ibm-semeru-runtimes:open-21-jre                                                                                                                                           0.2s
+ => [internal] load .dockerignore                                                                                                                                                                                            0.0s
+ => => transferring context: 2B                                                                                                                                                                                              0.0s
+ => [internal] load build context                                                                                                                                                                                            0.5s
+ => => transferring context: 69.19MB                                                                                                                                                                                         0.4s
+ => CACHED [1/2] FROM docker.io/library/ibm-semeru-runtimes:open-21-jre@sha256:60a5e3608488376679e9e8b936eb5d8ee19fb567e5def1ea1b55d1058864aa3f                                                                              0.0s
+ => [2/2] COPY build/libs/reader-0.1.0.jar /app.jar                                                                                                                                                                          0.1s
+ => exporting to image                                                                                                                                                                                                       0.2s
+ => => exporting layers                                                                                                                                                                                                      0.2s
+ => => writing image sha256:d442ca00609d08949cc1f549a9b0dbe7ca771d4c28ea5cca119c883209b349dc                                                                                                                                 0.0s
+ => => naming to docker.io/library/demo-reader:0.1.0                                                                                                                                                                         0.0s
+==========================================
+ 4. Exporting Docker Images to Archive
+==========================================
+==========================================
+ 5. Importing Images into k3s & Verifying
+==========================================
+[sudo] password for sahina: 
+docker.io/library/demo front:0.1.0              saved
+docker.io/library/demo back:0.1.0               saved
+docker.io/library/demo reader:0.1.0             saved
+application/vnd.oci.image.manifest.v1+json sha256:982e41abc568d00961266fadd4ad9e836d0bb037968019b3e7d3494156830e4e
+application/vnd.oci.image.manifest.v1+json sha256:73b8c4bcbecea2b284aa807c18b46c248c356119a3afc6731ddaf0da2fc41618
+application/vnd.oci.image.manifest.v1+json sha256:3ec45122993e320666cad12a19bfb9616316792d5f76d88269c732dd0c18a13a
+Importing       elapsed: 6.4 s  total:   0.0 B  (0.0 B/s)
+------------------------------------------
+SUCCESS: The k3s import command completed successfully!
+All images are loaded and ready for Helm deployment.
+Deploy Kafka and Postgresql with bitnami Helm Charts:
+==========================================
+ Add Helm Repositories
+==========================================
+"bitnami" already exists with the same configuration, skipping
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "kafka-ui" chart repository
+...Successfully got an update from the "aqua" chart repository
+...Successfully got an update from the "ingress-nginx" chart repository
+...Successfully got an update from the "cnpg" chart repository
+...Successfully got an update from the "trivy-dojo-report-operator" chart repository
+...Successfully got an update from the "strimzi" chart repository
+...Successfully got an update from the "policy-reporter" chart repository
+...Successfully got an update from the "kubecost" chart repository
+...Successfully got an update from the "defectdojo" chart repository
+...Successfully got an update from the "open-telemetry" chart repository
+...Successfully got an update from the "argo" chart repository
+...Successfully got an update from the "helmforge" chart repository
+...Successfully got an update from the "grafana" chart repository
+...Successfully got an update from the "bitnami" chart repository
+Update Complete. ⎈Happy Helming!⎈
+==========================================
+ Deploy Kafka
+==========================================
+Release "kafka" does not exist. Installing it now.
+NAME: kafka
+LAST DEPLOYED: Tue Oct  6 00:17:29 2026
+NAMESPACE: kafka
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+CHART NAME: kafka
+CHART VERSION: 32.4.3
+APP VERSION: 4.0.0
+
+⚠ WARNING: Since August 28th, 2025, only a limited subset of images/charts are available for free.
+    Subscribe to Bitnami Secure Images to receive continued support and security updates.
+    More info at https://bitnami.com and https://github.com/bitnami/containers/issues/83267
+
+** Please be patient while the chart is being deployed **
+
+Kafka can be accessed by consumers via port 9092 on the following DNS name from within your cluster:
+
+    kafka.kafka.svc.cluster.local
+
+Each Kafka broker can be accessed by producers via port 9092 on the following DNS name(s) from within your cluster:
+
+    kafka-controller-0.kafka-controller-headless.kafka.svc.cluster.local:9092
+    kafka-broker-0.kafka-broker-headless.kafka.svc.cluster.local:9092
+
+To create a pod that you can use as a Kafka client run the following commands:
+
+    kubectl run kafka-client --restart='Never' --image docker.io/bitnamilegacy/kafka:4.0.0 --namespace kafka --command -- sleep infinity
+    kubectl exec --tty -i kafka-client --namespace kafka -- bash
+
+    PRODUCER:
+        kafka-console-producer.sh \
+            --bootstrap-server kafka.kafka.svc.cluster.local:9092 \
+            --topic test
+
+    CONSUMER:
+        kafka-console-consumer.sh \
+            --bootstrap-server kafka.kafka.svc.cluster.local:9092 \
+            --topic test \
+            --from-beginning
+
+WARNING: There are "resources" sections in the chart not set. Using "resourcesPreset" is not recommended for production. For production installations, please set the following values according to your workload needs:
+  - broker.resources
+  - controller.resources
+  - provisioning.resources
+  - defaultInitContainers.prepareConfig.resources
++info https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+
+⚠ SECURITY WARNING: Original containers have been substituted. This Helm chart was designed, tested, and validated on multiple platforms using a specific set of Bitnami and Tanzu Application Catalog containers. Substituting other containers is likely to cause degraded security and performance, broken chart features, and missing environment variables.
+
+Substituted images detected:
+  - docker.io/bitnamilegacy/kafka:4.0.0
+
+⚠ SECURITY WARNING: Verifying original container images was skipped. Please note this Helm chart was designed, tested, and validated on multiple platforms using a specific set of Bitnami and Bitnami Secure Images containers. Substituting other containers is likely to cause degraded security and performance, broken chart features, and missing environment variables.
+==========================================
+ Deploy Postgre
+==========================================
+namespace/postgres configured
+secret/postgres-auth configured
+Release "postgres" does not exist. Installing it now.
+NAME: postgres
+LAST DEPLOYED: Tue Oct  6 00:18:18 2026
+NAMESPACE: postgres
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+CHART NAME: postgresql
+CHART VERSION: 18.12.4
+APP VERSION: 18.6.0
+
+** Please be patient while the chart is being deployed **
+
+WARNING: PostgreSQL has been configured without authentication, this is not recommended for production environments.
+
+PostgreSQL can be accessed via port 5432 on the following DNS names from within your cluster:
+
+    postgres-postgresql.postgres.svc.cluster.local - Read/Write connection
+
+To get the password for "postgres" run:
+
+    export POSTGRES_PASSWORD=$(kubectl get secret --namespace postgres postgres-auth -o jsonpath="{.data.postgres-password}" | base64 -d)
+
+To connect to your database run the following command:
+
+    kubectl run postgres-postgresql-client --rm --tty -i --restart='Never' --namespace postgres --image docker.io/bitnamilegacy/postgresql:17.6.0-debian-12-r4 \
+      --command -- psql --host postgres-postgresql -d postgres -p 5432
+
+    > NOTE: If you access the container using bash, make sure that you execute "/opt/bitnami/scripts/postgresql/entrypoint.sh /bin/bash" in order to avoid the error "psql: local user with ID 1001 does not exist"
+
+To connect to your database from outside the cluster execute the following commands:
+
+    kubectl port-forward --namespace postgres svc/postgres-postgresql 5432:5432 &
+    psql --host 127.0.0.1 -d postgres -p 5432
+WARNING: Rolling tag detected (bitnami/postgres-exporter:latest), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://techdocs.broadcom.com/us/en/vmware-tanzu/bitnami-secure-images/bitnami-secure-images/services/bsi-doc/apps-tutorials-understand-rolling-tags-containers-index.html
+WARNING: Rolling tag detected (bitnami/os-shell:latest), please note that it is strongly recommended to avoid using rolling tags in a production environment.
++info https://techdocs.broadcom.com/us/en/vmware-tanzu/bitnami-secure-images/bitnami-secure-images/services/bsi-doc/apps-tutorials-understand-rolling-tags-containers-index.html
+
+WARNING: There are "resources" sections in the chart not set. Using "resourcesPreset" is not recommended for production. For production installations, please set the following values according to your workload needs:
+  - primary.resources
+  - readReplicas.resources
++info https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+
+⚠ SECURITY WARNING: Original containers have been substituted. This Helm chart was designed, tested, and validated on multiple platforms using a specific set of Bitnami and Tanzu Application Catalog containers. Substituting other containers is likely to cause degraded security and performance, broken chart features, and missing environment variables.
+
+Substituted images detected:
+  - docker.io/bitnamilegacy/postgresql:17.6.0-debian-12-r4
+
+⚠ SECURITY WARNING: Verifying original container images was skipped. Please note this Helm chart was designed, tested, and validated on multiple platforms using a specific set of Bitnami and Bitnami Secure Images containers. Substituting other containers is likely to cause degraded security and performance, broken chart features, and missing environment variables.
+Deploy Applications with internal Helm Charts:
+Using version: 0.1.0
+namespace/demo-back configured
+secret/postgres-secret configured
+namespace/demo-reader configured
+secret/postgres-secret configured
+secret/demo-front-tls configured
+secret/demo-reader-tls configured
+job.batch "postgres-create-app-users" deleted
+job.batch/postgres-create-app-users created
+Release "back-app" does not exist. Installing it now.
+NAME: back-app
+LAST DEPLOYED: Tue Oct  6 00:18:25 2026
+NAMESPACE: demo-back
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+Release "front-app" does not exist. Installing it now.
+NAME: front-app
+LAST DEPLOYED: Tue Oct  6 00:18:26 2026
+NAMESPACE: demo-front
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+Release "reader-app" does not exist. Installing it now.
+NAME: reader-app
+LAST DEPLOYED: Tue Oct  6 00:18:26 2026
+NAMESPACE: demo-reader
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
